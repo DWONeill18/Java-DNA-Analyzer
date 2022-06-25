@@ -1,0 +1,2 @@
+public class DNAMatch(dnaFile) {
+}
