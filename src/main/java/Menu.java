@@ -1,49 +1,79 @@
+import java.io.PrintStream;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import static java.lang.System.out;
+
 public class Menu {
+
+    //Scanner scanner = new Scanner(System.in);  // Create a Scanner object
+    private final Scanner scanner;
+    private final PrintStream out;
+
+    public Menu(Scanner scanner, PrintStream out) {
+        this.scanner = scanner;
+        this.out = out;
+    }
+
+
     public void welcomeMenu() {
-        System.out.println("############################################");
-        System.out.println("##### DNA Lab Analysis -- Version 1.2 #####");
-        System.out.println("############################################");
-        System.out.println("############################################");
-        System.out.println("########## Welcome to the DNA Lab! #########");
+        out.println("---------------------------------");
+        out.println("---- Welcome to the DNA Lab! ----");
+        out.println("---------------------------------");
+    }
+
+    private void printMenu() {
+        out.println("\n1. DNA Match");
+        out.println("2. DNA Replication");
+        out.println("3. DNA Transcription");
+        out.println("4. DNA Translation");
+        out.println("5. Random DNA Generator");
+        out.println("6. Random DNA Mutation");
+        out.println("7. Reverse Transcription");
+        out.println("8. Information");
+        out.println("9. Exit\n");
+    }
+
+    private int readOption() {
+        while (true) {
+
+            printMenu();
+            out.print("Enter option (1-9): ");
+
+            if (!scanner.hasNextInt()) {
+                out.println("Invalid input, please enter a number from 1-9");
+                scanner.nextLine(); // clear bad input
+                continue;
+            }
+
+            int option = scanner.nextInt();
+
+            if (option < 1 || option > 9) {
+                out.println("Please choose a valid option (1-9)");
+                continue;
+            }
+
+            return option;  // valid input exits loop
+        }
     }
 
     public void analysisMenu() {
-        boolean startAnalysisMenu = true;
-        while (startAnalysisMenu) {
-            System.out.println(System.lineSeparator() + "1. DNA Match");
-            System.out.println("2. DNA Replication");
-            System.out.println("3. DNA Transcription");
-            System.out.println("4. DNA Translation");
-            System.out.println("5. Random DNA Generator");
-            System.out.println("6. Random DNA Mutation");
-            System.out.println("7. Reverse Transcription");
-            System.out.println("8. Information");
-            System.out.println("9. Exit" + System.lineSeparator());
+        boolean running = true;
+        while (running) {
 
-            Scanner scanner = new Scanner(System.in);  // Create a Scanner object
-            System.out.println("Enter option (1-9): " + System.lineSeparator());
-
-            int option = 0;
-            try {
-                option = scanner.nextInt();
-            } catch (InputMismatchException e) {
-                System.out.print("Invalid input, please enter a number from 1-9");
-            }
+            int option = readOption();
 
             switch (option) {
-                case 1 -> System.out.println("DNA Match");
-                case 2 -> System.out.println("DNA Replication");
-                case 3 -> System.out.println("DNA Transcription");
-                case 4 -> System.out.println("DNA Translation");
-                case 5 -> System.out.println("Random DNA Generator");
-                case 6 -> System.out.println("Mutation");
-                case 7 -> System.out.println("Reverse Transcription");
-                case 8 -> System.out.println(
+                case 1 -> out.println("DNA Match");
+                case 2 -> out.println("DNA Replication");
+                case 3 -> out.println("DNA Transcription");
+                case 4 -> out.println("DNA Translation");
+                case 5 -> out.println("Random DNA Generator");
+                case 6 -> out.println("Mutation");
+                case 7 -> out.println("Reverse Transcription");
+                case 8 -> out.println(
                         "Option Information" + System.lineSeparator() +
-                        "1. DNA Match - Check whether suspect matches smaple DNA" + System.lineSeparator() +
+                        "1. DNA Match - Check whether suspect matches sample DNA" + System.lineSeparator() +
                         "2. DNA Replication - Replicate a DNA strand to give both it's original and complemetary strands" + System.lineSeparator() +
                         "3. DNA Transcription - Transcribe a DNA strand to its mRNA counterpart" + System.lineSeparator() +
                         "4. mRNA Translation - Translate an mRNA strand to amino acids in a polypeptide chain" + System.lineSeparator() +
@@ -51,8 +81,8 @@ public class Menu {
                         "6. Random DNA Mutation - Insert a random DNA base into a DNA strand to cause a mutation" + System.lineSeparator() +
                         "7. Reverse Transcription - Transcribe an RNA strand back to its DNA counterpart" + System.lineSeparator());
                 case 9 -> {
-                    System.out.println("Closing down the lab" + System.lineSeparator());
-                    startAnalysisMenu = false;
+                    out.println("Closing down the lab" + System.lineSeparator());
+                    running = false;
                 }
             }
         }

@@ -1,2 +1,4 @@
-public class DNAMatch(dnaFile) {
+public class DNAMatch {
+    public DNAMatch() {
+    }
 }
