@@ -1,8 +1,6 @@
+import java.io.IOException;
 import java.io.PrintStream;
-import java.util.InputMismatchException;
 import java.util.Scanner;
-
-import static java.lang.System.out;
 
 public class Menu {
 
@@ -57,14 +55,23 @@ public class Menu {
         }
     }
 
-    public void analysisMenu() {
+    public void analysisMenu() throws IOException {
         boolean running = true;
         while (running) {
 
             int option = readOption();
 
             switch (option) {
-                case 1 -> out.println("DNA Match");
+                case 1 -> {
+                    out.println("DNA Match");
+                    out.print("Enter file path: ");
+                    scanner.nextLine();
+                    String fileName = scanner.nextLine();
+
+                    ReadDNA readDNA = new ReadDNA(out);
+                    readDNA.readFile(fileName);
+                }
+
                 case 2 -> out.println("DNA Replication");
                 case 3 -> out.println("DNA Transcription");
                 case 4 -> out.println("DNA Translation");
