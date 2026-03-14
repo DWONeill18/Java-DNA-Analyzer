@@ -55,7 +55,7 @@ public class Menu {
         }
     }
 
-    public void analysisMenu() throws IOException {
+    public void analysisMenu() {
         boolean running = true;
         while (running) {
 
@@ -69,7 +69,17 @@ public class Menu {
                     String fileName = scanner.nextLine();
 
                     ReadDNA readDNA = new ReadDNA(out);
-                    readDNA.readFile(fileName);
+                    String content = readDNA.readFile(fileName);
+
+                    out.print("Enter file path to output file: ");
+                    String outputFileName = scanner.nextLine();
+
+                    WriteDNA writeDNA = new WriteDNA();
+                    try {
+                        writeDNA.writeFile(outputFileName, content);
+                    } catch (IOException e) {
+                        out.println("Error while writing file");
+                    }
                 }
 
                 case 2 -> out.println("DNA Replication");
