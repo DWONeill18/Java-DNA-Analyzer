@@ -10,20 +10,24 @@ public class ReadDNA {
         this.out = out;
     }
 
-    public void readFile(String fileName) throws IOException {
+    public String readFile(String fileName) {
+        StringBuilder sb = new StringBuilder();
 
         try (FileReader reader = new FileReader(fileName)) {
             int ch = reader.read();
             if (ch == -1) {
                 out.println("Error: file is empty");
-                return;
+                return "";
             }
             do {
-                out.print((char) ch);
+                sb.append((char) ch);
             } while ((ch = reader.read()) != -1);
         } catch (IOException e) {
             out.println("Error while reading file");
+            return "";
         }
+
+        return sb.toString();
     }
 
 }
