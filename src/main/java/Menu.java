@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Menu {
@@ -69,14 +70,18 @@ public class Menu {
                     String fileName = scanner.nextLine();
 
                     ReadDNA readDNA = new ReadDNA(out);
-                    String content = readDNA.readFile(fileName);
+                    Optional<String> content = readDNA.readFile(fileName);
+                    if (content.isEmpty()) {
+                        out.println("No data to write; aborting.");
+                        break;
+                    }
 
                     out.print("Enter file path to output file: ");
                     String outputFileName = scanner.nextLine();
 
                     WriteDNA writeDNA = new WriteDNA();
                     try {
-                        writeDNA.writeFile(outputFileName, content);
+                        writeDNA.writeFile(outputFileName, content.get());
                     } catch (IOException e) {
                         out.println("Error while writing file");
                     }
