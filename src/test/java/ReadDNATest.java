@@ -25,9 +25,10 @@ public class ReadDNATest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ReadDNA readDNA = new ReadDNA(new PrintStream(out));
 
-        String content = readDNA.readFile(filePath.toString());
+        var content = readDNA.readFile(filePath.toString());
 
-        assertEquals("ACGT", content);
+        assertTrue(content.isPresent());
+        assertEquals("ACGT", content.get());
     }
 
     @Test
@@ -35,10 +36,10 @@ public class ReadDNATest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ReadDNA readDNA = new ReadDNA(new PrintStream(out));
 
-        String content = readDNA.readFile(tempDir.resolve("missing.txt").toString());
+        var content = readDNA.readFile(tempDir.resolve("missing.txt").toString());
         String output = out.toString();
 
-        assertEquals("", content);
+        assertTrue(content.isEmpty());
         assertTrue(output.contains("Error while reading file"));
     }
 
@@ -50,10 +51,10 @@ public class ReadDNATest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ReadDNA readDNA = new ReadDNA(new PrintStream(out));
 
-        String content = readDNA.readFile(filePath.toString());
+        var content = readDNA.readFile(filePath.toString());
         String output = out.toString();
 
-        assertEquals("", content);
+        assertTrue(content.isEmpty());
         assertTrue(output.contains("Error: file is empty"));
     }
 }
