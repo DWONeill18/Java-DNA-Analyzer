@@ -1,11 +1,20 @@
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class MenuTest {
+@Tag("integration")
+class MenuIntegrationTest {
+
+    @TempDir
+    Path tempDir;
 
     @Test
     void welcomeMenu_printsWelcomeBanner() {
@@ -223,5 +232,81 @@ class MenuTest {
 
         assertTrue(output.contains("Please choose a valid option (1-9)"));
         assertTrue(output.contains("Closing down the lab"));
+    }
+
+    @Test
+    void analysisMenu_option1_readsAndWritesFile() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Path outputFile = tempDir.resolve("output-dna.txt");
+        Files.writeString(inputFile, "ACGT");
+
+        String input = "1\n" + inputFile + "\n" + outputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+
+        String output = out.toString();
+        assertTrue(output.contains("DNA Match"));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(Files.exists(outputFile));
+        assertEquals("ACGT", Files.readString(outputFile));
+    }
+
+    @Test
+    void analysisMenu_option1_writeFailure_printsError() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Files.writeString(inputFile, "ACGT");
+
+        String input = "1\n" + inputFile + "\n" + tempDir + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+
+        String output = out.toString();
+        assertTrue(output.contains("DNA Match"));
+        assertTrue(output.contains("Error while writing file"));
+        assertTrue(output.contains("Closing down the lab"));
+    }
+
+    @Test
+    void analysisMenu_option1_readFailure_doesNotPromptForOutputPath() throws Exception {
+        Path missingFile = tempDir.resolve("missing-dna.txt");
+        String input = "1\n" + missingFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+
+        String output = out.toString();
+        assertTrue(output.contains("DNA Match"));
+        assertTrue(output.contains("Error while reading file"));
+        assertTrue(output.contains("No data to write; aborting."));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter file path to output file: "));
+    }
+
+    @Test
+    void analysisMenu_option1_emptyFile_doesNotPromptForOutputPath() throws Exception {
+        Path emptyFile = tempDir.resolve("empty-dna.txt");
+        Files.writeString(emptyFile, "");
+
+        String input = "1\n" + emptyFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+
+        String output = out.toString();
+        assertTrue(output.contains("DNA Match"));
+        assertTrue(output.contains("Error: file is empty"));
+        assertTrue(output.contains("No data to write; aborting."));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter file path to output file: "));
     }
 }
