@@ -5,6 +5,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("unit")
 class DNAHelpersTest {
@@ -58,5 +59,25 @@ class DNAHelpersTest {
         );
 
         assertEquals("DNA contains invalid characters", ex.getMessage());
+    }
+
+    @Test
+    void dnaToCodons_minimalLength_returnsSingleCodon() {
+        DNAHelpers helpers = new DNAHelpers();
+
+        List<String> codons = helpers.dnaToCodons("ACG");
+
+        assertEquals(List.of("ACG"), codons);
+    }
+
+    @Test
+    void dnaToCodons_largeInput_returnsExpectedCount() {
+        DNAHelpers helpers = new DNAHelpers();
+        String dna = "ACG".repeat(1000);
+
+        List<String> codons = helpers.dnaToCodons(dna);
+
+        assertEquals(1000, codons.size());
+        assertTrue(codons.stream().allMatch("ACG"::equals));
     }
 }
