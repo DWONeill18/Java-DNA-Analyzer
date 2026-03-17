@@ -47,4 +47,16 @@ class DNAHelpersTest {
 
         assertEquals(List.of(), codons);
     }
+
+    @Test
+    void dnaToCodons_invalidCharacters_throwsErrorMessage() {
+        DNAHelpers helpers = new DNAHelpers();
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> helpers.dnaToCodons("ACGTX")
+        );
+
+        assertEquals("DNA contains invalid characters", ex.getMessage());
+    }
 }

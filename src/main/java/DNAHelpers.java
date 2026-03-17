@@ -7,13 +7,17 @@ public class DNAHelpers {
         if (dna == null || dna.isBlank()) {
             return List.of();
         }
-        if (dna.length() % 3 != 0) {
+        String normalized = dna.trim().toUpperCase();
+        if (!normalized.matches("[ACGT]+")) {
+            throw new IllegalArgumentException("DNA contains invalid characters");
+        }
+        if (normalized.length() % 3 != 0) {
             throw new IllegalArgumentException("DNA length must be divisible by 3");
         }
 
         List<String> codons = new ArrayList<>();
-        for (int i = 0; i < dna.length(); i += 3) {
-            codons.add(dna.substring(i, i + 3));
+        for (int i = 0; i < normalized.length(); i += 3) {
+            codons.add(normalized.substring(i, i + 3));
         }
         return codons;
     }
