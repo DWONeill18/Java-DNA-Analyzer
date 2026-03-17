@@ -29,4 +29,22 @@ class DNAHelpersTest {
 
         assertEquals("DNA length must be divisible by 3", ex.getMessage());
     }
+
+    @Test
+    void dnaToCodons_nullInput_returnsEmptyList() {
+        DNAHelpers helpers = new DNAHelpers();
+
+        List<String> codons = helpers.dnaToCodons(null);
+
+        assertEquals(List.of(), codons);
+    }
+
+    @Test
+    void dnaToCodons_blankInput_returnsEmptyList() {
+        DNAHelpers helpers = new DNAHelpers();
+
+        List<String> codons = helpers.dnaToCodons("   ");
+
+        assertEquals(List.of(), codons);
+    }
 }
