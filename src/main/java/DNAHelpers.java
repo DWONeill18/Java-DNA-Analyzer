@@ -19,6 +19,6 @@ public class DNAHelpers {
         for (int i = 0; i < normalized.length(); i += 3) {
             codons.add(normalized.substring(i, i + 3));
         }
-        return codons;
+        return List.copyOf(codons);
     }
 }
