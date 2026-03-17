@@ -80,4 +80,34 @@ class DNAHelpersTest {
         assertEquals(1000, codons.size());
         assertTrue(codons.stream().allMatch("ACG"::equals));
     }
+
+    @Test
+    void dnaToCodons_lowercaseInput_isNormalizedToUppercase() {
+        DNAHelpers helpers = new DNAHelpers();
+
+        List<String> codons = helpers.dnaToCodons("acgtga");
+
+        assertEquals(List.of("ACG", "TGA"), codons);
+    }
+
+    @Test
+    void dnaToCodons_whitespaceIsTrimmed() {
+        DNAHelpers helpers = new DNAHelpers();
+
+        List<String> codons = helpers.dnaToCodons("  ACGTGA  ");
+
+        assertEquals(List.of("ACG", "TGA"), codons);
+    }
+
+    @Test
+    void dnaToCodons_invalidDigit_throwsErrorMessage() {
+        DNAHelpers helpers = new DNAHelpers();
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> helpers.dnaToCodons("ACG1TG")
+        );
+
+        assertEquals("DNA contains invalid characters", ex.getMessage());
+    }
 }
