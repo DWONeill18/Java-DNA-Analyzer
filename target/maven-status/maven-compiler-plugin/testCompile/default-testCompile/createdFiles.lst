@@ -1,3 +1,5 @@
-MenuIntegrationTest.class
+MainIntegrationTest.class
+DNAHelpersTest.class
 WriteDNATest.class
+MenuIntegrationTest.class
 ReadDNATest.class
