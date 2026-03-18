@@ -1,5 +1,7 @@
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class DNAHelpers {
 
@@ -20,5 +22,25 @@ public class DNAHelpers {
             codons.add(normalized.substring(i, i + 3));
         }
         return List.copyOf(codons);
+    }
+
+    public void countCodonOccurrencies(List<String> codons, Scanner scanner, PrintStream out) {
+        out.print("Enter codon: ");
+        String codon = scanner.nextLine();
+
+        if (codons == null || codons.isEmpty() || codon == null || codon.isBlank()) {
+            out.println("Codon " + codon + " appears 0 times.");
+            return;
+        }
+
+        String normalizedCodon = codon.trim().toUpperCase();
+        int count = 0;
+        for (String item : codons) {
+            if (normalizedCodon.equals(item)) {
+                count++;
+            }
+        }
+
+        out.println("Codon " + normalizedCodon + " appears " + count + " times.");
     }
 }
