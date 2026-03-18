@@ -238,9 +238,9 @@ class MenuIntegrationTest {
     void analysisMenu_option1_readsAndWritesFile() throws Exception {
         Path inputFile = tempDir.resolve("input-dna.txt");
         Path outputFile = tempDir.resolve("output-dna.txt");
-        Files.writeString(inputFile, "ACGT");
+        Files.writeString(inputFile, "ACGTGA");
 
-        String input = "1\n" + inputFile + "\n" + outputFile + "\n9\n";
+        String input = "1\n" + inputFile + "\nACG\n" + outputFile + "\n9\n";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -249,17 +249,19 @@ class MenuIntegrationTest {
 
         String output = out.toString();
         assertTrue(output.contains("DNA Match"));
+        assertTrue(output.contains("Enter codon: "));
+        assertTrue(output.contains("Codon ACG appears 1 times."));
         assertTrue(output.contains("Closing down the lab"));
         assertTrue(Files.exists(outputFile));
-        assertEquals("ACGT", Files.readString(outputFile));
+        assertEquals("ACGTGA", Files.readString(outputFile));
     }
 
     @Test
     void analysisMenu_option1_writeFailure_printsError() throws Exception {
         Path inputFile = tempDir.resolve("input-dna.txt");
-        Files.writeString(inputFile, "ACGT");
+        Files.writeString(inputFile, "ACGTGA");
 
-        String input = "1\n" + inputFile + "\n" + tempDir + "\n9\n";
+        String input = "1\n" + inputFile + "\nACG\n" + tempDir + "\n9\n";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -268,6 +270,8 @@ class MenuIntegrationTest {
 
         String output = out.toString();
         assertTrue(output.contains("DNA Match"));
+        assertTrue(output.contains("Enter codon: "));
+        assertTrue(output.contains("Codon ACG appears 1 times."));
         assertTrue(output.contains("Error while writing file"));
         assertTrue(output.contains("Closing down the lab"));
     }
@@ -307,6 +311,112 @@ class MenuIntegrationTest {
         assertTrue(output.contains("Error: file is empty"));
         assertTrue(output.contains("No data to write; aborting."));
         assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter file path to output file: "));
+    }
+
+    @Test
+    void analysisMenu_option1_codonCount_zeroTimes() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Path outputFile = tempDir.resolve("output-dna.txt");
+        Files.writeString(inputFile, "ACGACGACG");
+
+        String input = "1\n" + inputFile + "\nAAA\n" + outputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+
+        String output = out.toString();
+        assertTrue(output.contains("Codon AAA appears 0 times."));
+    }
+
+    @Test
+    void analysisMenu_option1_codonCount_multipleTimes() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Path outputFile = tempDir.resolve("output-dna.txt");
+        Files.writeString(inputFile, "ACGACGACG");
+
+        String input = "1\n" + inputFile + "\nACG\n" + outputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+
+        String output = out.toString();
+        assertTrue(output.contains("Codon ACG appears 3 times."));
+    }
+
+    @Test
+    void analysisMenu_option1_invalidCodonInput_printsZeroTimes() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Path outputFile = tempDir.resolve("output-dna.txt");
+        Files.writeString(inputFile, "ACGACGACG");
+
+        String input = "1\n" + inputFile + "\nAX1\n" + outputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+
+        String output = out.toString();
+        assertTrue(output.contains("Codon AX1 appears 0 times."));
+    }
+
+    @Test
+    void analysisMenu_option1_blankCodonInput_printsZeroTimes() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Path outputFile = tempDir.resolve("output-dna.txt");
+        Files.writeString(inputFile, "ACGACGACG");
+
+        String input = "1\n" + inputFile + "\n   \n" + outputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+
+        String output = out.toString();
+        assertTrue(output.contains("Codon    appears 0 times."));
+    }
+
+    @Test
+    void analysisMenu_option1_lowercaseCodonInput_isNormalized() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Path outputFile = tempDir.resolve("output-dna.txt");
+        Files.writeString(inputFile, "ACGACGACG");
+
+        String input = "1\n" + inputFile + "\nacg\n" + outputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+
+        String output = out.toString();
+        assertTrue(output.contains("Codon ACG appears 3 times."));
+    }
+
+    @Test
+    void analysisMenu_option1_secondRunReadFailure_doesNotPromptForOutputPath() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Path outputFile = tempDir.resolve("output-dna.txt");
+        Path missingFile = tempDir.resolve("missing-dna.txt");
+        Files.writeString(inputFile, "ACGACGACG");
+
+        String input = "1\n" + inputFile + "\nACG\n" + outputFile + "\n1\n" + missingFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+
+        String output = out.toString();
+        assertTrue(output.contains("Codon ACG appears 3 times."));
+        assertTrue(output.contains("Error while reading file"));
+        assertTrue(output.contains("No data to write; aborting."));
         assertTrue(!output.contains("Enter file path to output file: "));
     }
 }

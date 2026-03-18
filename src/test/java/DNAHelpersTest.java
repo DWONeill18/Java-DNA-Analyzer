@@ -1,7 +1,11 @@
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.List;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -112,20 +116,30 @@ class DNAHelpersTest {
     }
 
     @Test
-    void countCodonOccurrences_countsExactMatches() {
+    void countCodonOccurrencies_countsExactMatches() {
         DNAHelpers helpers = new DNAHelpers();
 
-        int count = helpers.countCodonOccurrences("ACGTGACCTACG", "ACG");
+        List<String> codons = List.of("ACG", "TGA", "CCT", "ACG");
+        ByteArrayInputStream in = new ByteArrayInputStream("ACG\n".getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        assertEquals(2, count);
+        helpers.countCodonOccurrencies(codons, new Scanner(in), new PrintStream(out));
+        String output = out.toString();
+
+        assertTrue(output.contains("Codon ACG appears 2 times."));
     }
 
     @Test
-    void countCodonOccurrences_returnsZeroWhenNotFound() {
+    void countCodonOccurrencies_returnsZeroWhenNotFound() {
         DNAHelpers helpers = new DNAHelpers();
 
-        int count = helpers.countCodonOccurrences("ACGTGACCT", "AAA");
+        List<String> codons = List.of("ACG", "TGA", "CCT");
+        ByteArrayInputStream in = new ByteArrayInputStream("AAA\n".getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        assertEquals(0, count);
+        helpers.countCodonOccurrencies(codons, new Scanner(in), new PrintStream(out));
+        String output = out.toString();
+
+        assertTrue(output.contains("Codon AAA appears 0 times."));
     }
 }
