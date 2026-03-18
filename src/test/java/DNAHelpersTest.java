@@ -110,4 +110,22 @@ class DNAHelpersTest {
 
         assertEquals("DNA contains invalid characters", ex.getMessage());
     }
+
+    @Test
+    void countCodonOccurrences_countsExactMatches() {
+        DNAHelpers helpers = new DNAHelpers();
+
+        int count = helpers.countCodonOccurrences("ACGTGACCTACG", "ACG");
+
+        assertEquals(2, count);
+    }
+
+    @Test
+    void countCodonOccurrences_returnsZeroWhenNotFound() {
+        DNAHelpers helpers = new DNAHelpers();
+
+        int count = helpers.countCodonOccurrences("ACGTGACCT", "AAA");
+
+        assertEquals(0, count);
+    }
 }
