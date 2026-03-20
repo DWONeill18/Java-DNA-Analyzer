@@ -77,7 +77,7 @@ public class Menu {
                     }
 
                     DNAHelpers helpers = new DNAHelpers();
-                    helpers.countCodonOccurrencies(
+                    helpers.countCodonOccurrences(
                             helpers.dnaToCodons(content.get()),
                             scanner,
                             out
