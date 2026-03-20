@@ -345,16 +345,18 @@ class MenuIntegrationTest {
         menu.analysisMenu();
 
         String output = out.toString();
+        assertTrue(output.contains("Enter codon: "));
+        assertTrue(!output.contains("Invalid codon. Please enter a 3-letter codon using A, C, G, T."));
         assertTrue(output.contains("Codon ACG appears 3 times."));
     }
 
     @Test
-    void analysisMenu_option1_invalidCodonInput_printsZeroTimes() throws Exception {
+    void analysisMenu_option1_invalidCodonInput_reprompts() throws Exception {
         Path inputFile = tempDir.resolve("input-dna.txt");
         Path outputFile = tempDir.resolve("output-dna.txt");
         Files.writeString(inputFile, "ACGACGACG");
 
-        String input = "1\n" + inputFile + "\nAX1\n" + outputFile + "\n9\n";
+        String input = "1\n" + inputFile + "\nAX1\nACG\n" + outputFile + "\n9\n";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -362,16 +364,18 @@ class MenuIntegrationTest {
         menu.analysisMenu();
 
         String output = out.toString();
-        assertTrue(output.contains("Codon AX1 appears 0 times."));
+        assertTrue(output.contains("Invalid codon. Please enter a 3-letter codon using A, C, G, T."));
+        assertTrue(output.contains("Enter codon: "));
+        assertTrue(output.contains("Codon ACG appears 3 times."));
     }
 
     @Test
-    void analysisMenu_option1_blankCodonInput_printsZeroTimes() throws Exception {
+    void analysisMenu_option1_blankCodonInput_reprompts() throws Exception {
         Path inputFile = tempDir.resolve("input-dna.txt");
         Path outputFile = tempDir.resolve("output-dna.txt");
         Files.writeString(inputFile, "ACGACGACG");
 
-        String input = "1\n" + inputFile + "\n   \n" + outputFile + "\n9\n";
+        String input = "1\n" + inputFile + "\n   \nACG\n" + outputFile + "\n9\n";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -379,7 +383,8 @@ class MenuIntegrationTest {
         menu.analysisMenu();
 
         String output = out.toString();
-        assertTrue(output.contains("Codon    appears 0 times."));
+        assertTrue(output.contains("Invalid codon. Please enter a 3-letter codon using A, C, G, T."));
+        assertTrue(output.contains("Codon ACG appears 3 times."));
     }
 
     @Test
@@ -406,17 +411,28 @@ class MenuIntegrationTest {
         Path missingFile = tempDir.resolve("missing-dna.txt");
         Files.writeString(inputFile, "ACGACGACG");
 
-        String input = "1\n" + inputFile + "\nACG\n" + outputFile + "\n1\n" + missingFile + "\n9\n";
-        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        String firstInput = "1\n" + inputFile + "\nACG\n" + outputFile + "\n9\n";
+        ByteArrayInputStream firstIn = new ByteArrayInputStream(firstInput.getBytes());
+        ByteArrayOutputStream firstOut = new ByteArrayOutputStream();
 
-        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
-        menu.analysisMenu();
+        Menu firstMenu = new Menu(new Scanner(firstIn), new PrintStream(firstOut));
+        firstMenu.analysisMenu();
+        String firstOutput = firstOut.toString();
+        assertTrue(firstOutput.contains("DNA Match"));
+        assertTrue(firstOutput.contains("Enter codon: "));
+        assertTrue(firstOutput.contains("Codon ACG appears 3 times."));
+        assertTrue(firstOutput.contains("Enter file path to output file: "));
 
-        String output = out.toString();
-        assertTrue(output.contains("Codon ACG appears 3 times."));
-        assertTrue(output.contains("Error while reading file"));
-        assertTrue(output.contains("No data to write; aborting."));
-        assertTrue(!output.contains("Enter file path to output file: "));
+        String secondInput = "1\n" + missingFile + "\n9\n";
+        ByteArrayInputStream secondIn = new ByteArrayInputStream(secondInput.getBytes());
+        ByteArrayOutputStream secondOut = new ByteArrayOutputStream();
+
+        Menu secondMenu = new Menu(new Scanner(secondIn), new PrintStream(secondOut));
+        secondMenu.analysisMenu();
+
+        String secondOutput = secondOut.toString();
+        assertTrue(secondOutput.contains("Error while reading file"));
+        assertTrue(secondOutput.contains("No data to write; aborting."));
+        assertTrue(!secondOutput.contains("Enter file path to output file: "));
     }
 }
