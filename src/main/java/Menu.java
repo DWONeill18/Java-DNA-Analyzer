@@ -76,6 +76,13 @@ public class Menu {
                         break;
                     }
 
+                    DNAHelpers helpers = new DNAHelpers();
+                    helpers.countCodonOccurrences(
+                            helpers.dnaToCodons(content.get()),
+                            scanner,
+                            out
+                    );
+
                     out.print("Enter file path to output file: ");
                     String outputFileName = scanner.nextLine();
 
