@@ -2,9 +2,12 @@ import DNAAnalysis.DNAReplication;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("unit")
 class DNAReplicationTest {
@@ -28,21 +31,21 @@ class DNAReplicationTest {
     }
 
     @Test
-    void replication_emptyList_returnsEmptyString() {
+    void replication_emptyList_returnsNoCodonsAvailableMessage() {
         DNAReplication replication = new DNAReplication();
 
         String result = replication.replication(List.of());
 
-        assertEquals("", result);
+        assertEquals("No codons available", result);
     }
 
     @Test
-    void replication_nullInput_returnsEmptyString() {
+    void replication_nullInput_returnsNoCodonsAvailableMessage() {
         DNAReplication replication = new DNAReplication();
 
         String result = replication.replication(null);
 
-        assertEquals("", result);
+        assertEquals("No codons available", result);
     }
 
     @Test
@@ -52,5 +55,14 @@ class DNAReplicationTest {
         String result = replication.replication(List.of("acg", "tga"));
 
         assertEquals("TGCACT", result);
+    }
+
+    @Test
+    void replication_blankCodons_returnsNoCodonsAvailableMessage() {
+        DNAReplication replication = new DNAReplication();
+
+        String result = replication.replication(List.of("   ", ""));
+
+        assertEquals("No codons available", result);
     }
 }
