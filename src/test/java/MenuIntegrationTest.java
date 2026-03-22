@@ -56,8 +56,12 @@ class MenuIntegrationTest {
     }
 
     @Test
-    void analysisMenu_option2_printsDnaReplication_andCloses() throws IOException {
-        String input = "2\n9\n";
+    void analysisMenu_option2_readsAndWritesReplication() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Path outputFile = tempDir.resolve("output-dna.txt");
+        Files.writeString(inputFile, "ACGTGA");
+
+        String input = "2\n" + inputFile + "\n" + outputFile + "\n9\n";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -66,7 +70,29 @@ class MenuIntegrationTest {
         String output = out.toString();
 
         assertTrue(output.contains("DNA Replication"));
+        assertTrue(output.contains("Enter file path to output file: "));
         assertTrue(output.contains("Closing down the lab"));
+        assertTrue(Files.exists(outputFile));
+        assertEquals("TGCACT", Files.readString(outputFile));
+    }
+
+    @Test
+    void analysisMenu_option2_invalidDna_printsErrorAndDoesNotPromptForOutputPath() throws Exception {
+        Path inputFile = tempDir.resolve("invalid-dna.txt");
+        Files.writeString(inputFile, "ACGTG");
+
+        String input = "2\n" + inputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+        String output = out.toString();
+
+        assertTrue(output.contains("DNA Replication"));
+        assertTrue(output.contains("DNA length must be divisible by 3"));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter file path to output file: "));
     }
 
     @Test
