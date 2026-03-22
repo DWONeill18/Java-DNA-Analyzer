@@ -18,7 +18,7 @@ public class DNAReplication {
             for (int i = 0; i < normalized.length(); i++) {
                 char base = normalized.charAt(i);
                 if (!isValidBase(base)) {
-                    return "DNA contains invalid characters";
+                    throw new IllegalArgumentException("DNA contains invalid characters");
                 }
                 complementary.append(complementOf(base));
             }

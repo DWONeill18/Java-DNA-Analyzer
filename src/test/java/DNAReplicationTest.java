@@ -2,12 +2,10 @@ import DNAAnalysis.DNAReplication;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Tag("unit")
 class DNAReplicationTest {
@@ -64,5 +62,17 @@ class DNAReplicationTest {
         String result = replication.replication(List.of("   ", ""));
 
         assertEquals("No codons available", result);
+    }
+
+    @Test
+    void replication_invalidBase_throwsErrorMessage() {
+        DNAReplication replication = new DNAReplication();
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> replication.replication(List.of("ACX"))
+        );
+
+        assertEquals("DNA contains invalid characters", ex.getMessage());
     }
 }
