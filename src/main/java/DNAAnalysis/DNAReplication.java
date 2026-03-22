@@ -37,7 +37,7 @@ public class DNAReplication {
             case 'T' -> 'A';
             case 'C' -> 'G';
             case 'G' -> 'C';
-            default -> base;
+            default -> throw new IllegalArgumentException("DNA contains invalid characters");
         };
     }
 
