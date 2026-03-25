@@ -4,9 +4,19 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+/**
+ * Utility helpers for validating and manipulating DNA strings and codon lists.
+ */
 public class DNAHelpers {
     private static final Pattern DNA_PATTERN = Pattern.compile("[ACGT]+");
 
+    /**
+     * Splits a DNA string into codons (3-base chunks) after validation.
+     *
+     * @param dna the raw DNA string to split; may be {@code null} or blank
+     * @return an immutable list of codons, or an empty list when input is {@code null} or blank
+     * @throws IllegalArgumentException when the DNA contains invalid characters or is not divisible by 3
+     */
     public List<String> dnaToCodons(String dna) {
         if (dna == null || dna.isBlank()) {
             return List.of();
@@ -26,6 +36,13 @@ public class DNAHelpers {
         return List.copyOf(codons);
     }
 
+    /**
+     * Prompts the user for a codon and prints how many times it appears in the list.
+     *
+     * @param codons  list of codons to search; may be {@code null} or empty
+     * @param scanner input source for user prompts
+     * @param out     output stream for prompts and messages
+     */
     public void countCodonOccurrences(List<String> codons, Scanner scanner, PrintStream out) {
         if (codons == null || codons.isEmpty()) {
             out.println("No codons available.");

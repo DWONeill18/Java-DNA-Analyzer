@@ -8,9 +8,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * Unit tests for {@link DNAAnalysis.DNAReplication}.
+ */
 @Tag("unit")
 class DNAReplicationTest {
 
+    /**
+     * Verifies multiple codons are replicated into a single complementary string.
+     */
     @Test
     void replication_multipleCodons_returnsComplementarySequence() {
         DNAReplication replication = new DNAReplication();
@@ -20,6 +26,9 @@ class DNAReplicationTest {
         assertEquals("TGCACTGGA", result);
     }
 
+    /**
+     * Verifies a single codon is replicated correctly.
+     */
     @Test
     void replication_singleCodon_returnsComplementarySequence() {
         DNAReplication replication = new DNAReplication();
@@ -29,6 +38,9 @@ class DNAReplicationTest {
         assertEquals("CAT", result);
     }
 
+    /**
+     * Ensures an empty list returns the no-codons message.
+     */
     @Test
     void replication_emptyList_returnsNoCodonsAvailableMessage() {
         DNAReplication replication = new DNAReplication();
@@ -38,6 +50,9 @@ class DNAReplicationTest {
         assertEquals("No codons available", result);
     }
 
+    /**
+     * Ensures null input returns the no-codons message.
+     */
     @Test
     void replication_nullInput_returnsNoCodonsAvailableMessage() {
         DNAReplication replication = new DNAReplication();
@@ -47,6 +62,9 @@ class DNAReplicationTest {
         assertEquals("No codons available", result);
     }
 
+    /**
+     * Ensures lowercase codons are normalized before replication.
+     */
     @Test
     void replication_lowercaseCodons_areNormalized() {
         DNAReplication replication = new DNAReplication();
@@ -56,6 +74,9 @@ class DNAReplicationTest {
         assertEquals("TGCACT", result);
     }
 
+    /**
+     * Ensures blank codons do not produce output and return the no-codons message.
+     */
     @Test
     void replication_blankCodons_returnsNoCodonsAvailableMessage() {
         DNAReplication replication = new DNAReplication();
@@ -65,6 +86,9 @@ class DNAReplicationTest {
         assertEquals("No codons available", result);
     }
 
+    /**
+     * Ensures invalid bases trigger an {@link IllegalArgumentException}.
+     */
     @Test
     void replication_invalidBase_throwsErrorMessage() {
         DNAReplication replication = new DNAReplication();

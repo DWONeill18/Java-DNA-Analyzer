@@ -10,12 +10,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Unit tests for {@link WriteDNA}.
+ */
 @Tag("unit")
 public class WriteDNATest {
 
+    /**
+     * Temporary directory for output files.
+     */
     @TempDir
     Path tempDir;
 
+    /**
+     * Verifies that writing to a valid path creates a file with the expected content.
+     *
+     * @throws IOException when file IO fails
+     */
     @Test
     public void writeFile_validPath_writesContent() throws IOException {
         Path outputFilePath = tempDir.resolve("output-dna.txt");
@@ -28,6 +39,9 @@ public class WriteDNATest {
         assertEquals("ACGT", actual);
     }
 
+    /**
+     * Verifies that writing to a directory path fails with an {@link IOException}.
+     */
     @Test
     public void writeFile_directoryPath_throwsIOException() {
         WriteDNA writeDNA = new WriteDNA();

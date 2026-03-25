@@ -11,12 +11,23 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Unit tests for {@link ReadDNA}.
+ */
 @Tag("unit")
 public class ReadDNATest {
 
+    /**
+     * Temporary directory for test files.
+     */
     @TempDir
     Path tempDir;
 
+    /**
+     * Verifies valid files return the expected content.
+     *
+     * @throws IOException when file IO fails
+     */
     @Test
     void readFile_validFile_returnsContent() throws IOException {
         Path filePath = tempDir.resolve("sample-dna.txt");
@@ -31,6 +42,9 @@ public class ReadDNATest {
         assertEquals("ACGT", content.get());
     }
 
+    /**
+     * Verifies missing files return empty content and print an error.
+     */
     @Test
     void readFile_missingFile_printsError_andReturnsEmpty() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -43,6 +57,11 @@ public class ReadDNATest {
         assertTrue(output.contains("Error while reading file"));
     }
 
+    /**
+     * Verifies empty files return empty content and print an empty-file error.
+     *
+     * @throws IOException when file IO fails
+     */
     @Test
     void readFile_emptyFile_printsEmptyError_andReturnsEmpty() throws IOException {
         Path filePath = tempDir.resolve("empty-dna.txt");

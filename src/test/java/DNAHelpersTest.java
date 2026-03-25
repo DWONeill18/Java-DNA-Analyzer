@@ -11,9 +11,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Unit tests for {@link DNAHelpers}.
+ */
 @Tag("unit")
 class DNAHelpersTest {
 
+    /**
+     * Verifies DNA strings are split into 3-base codons in order.
+     */
     @Test
     void dnaToCodons_splitsIntoGroupsOfThree() {
         DNAHelpers helpers = new DNAHelpers();
@@ -23,6 +29,9 @@ class DNAHelpersTest {
         assertEquals(List.of("ACG", "TGA", "CCT"), codons);
     }
 
+    /**
+     * Ensures non-divisible-by-three DNA lengths throw with the expected message.
+     */
     @Test
     void dnaToCodons_nonDivisibleByThree_throwsErrorMessage() {
         DNAHelpers helpers = new DNAHelpers();
@@ -35,6 +44,9 @@ class DNAHelpersTest {
         assertEquals("DNA length must be divisible by 3", ex.getMessage());
     }
 
+    /**
+     * Ensures null input yields an empty codon list.
+     */
     @Test
     void dnaToCodons_nullInput_returnsEmptyList() {
         DNAHelpers helpers = new DNAHelpers();
@@ -44,6 +56,9 @@ class DNAHelpersTest {
         assertEquals(List.of(), codons);
     }
 
+    /**
+     * Ensures blank input yields an empty codon list.
+     */
     @Test
     void dnaToCodons_blankInput_returnsEmptyList() {
         DNAHelpers helpers = new DNAHelpers();
@@ -53,6 +68,9 @@ class DNAHelpersTest {
         assertEquals(List.of(), codons);
     }
 
+    /**
+     * Ensures invalid characters throw with a clear error message.
+     */
     @Test
     void dnaToCodons_invalidCharacters_throwsErrorMessage() {
         DNAHelpers helpers = new DNAHelpers();
@@ -65,6 +83,9 @@ class DNAHelpersTest {
         assertEquals("DNA contains invalid characters", ex.getMessage());
     }
 
+    /**
+     * Verifies the minimal valid DNA length returns a single codon.
+     */
     @Test
     void dnaToCodons_minimalLength_returnsSingleCodon() {
         DNAHelpers helpers = new DNAHelpers();
@@ -74,6 +95,9 @@ class DNAHelpersTest {
         assertEquals(List.of("ACG"), codons);
     }
 
+    /**
+     * Confirms large inputs are split into the expected count of codons.
+     */
     @Test
     void dnaToCodons_largeInput_returnsExpectedCount() {
         DNAHelpers helpers = new DNAHelpers();
@@ -85,6 +109,9 @@ class DNAHelpersTest {
         assertTrue(codons.stream().allMatch("ACG"::equals));
     }
 
+    /**
+     * Ensures lowercase DNA is normalized to uppercase codons.
+     */
     @Test
     void dnaToCodons_lowercaseInput_isNormalizedToUppercase() {
         DNAHelpers helpers = new DNAHelpers();
@@ -94,6 +121,9 @@ class DNAHelpersTest {
         assertEquals(List.of("ACG", "TGA"), codons);
     }
 
+    /**
+     * Ensures leading and trailing whitespace is trimmed before validation.
+     */
     @Test
     void dnaToCodons_whitespaceIsTrimmed() {
         DNAHelpers helpers = new DNAHelpers();
@@ -103,6 +133,9 @@ class DNAHelpersTest {
         assertEquals(List.of("ACG", "TGA"), codons);
     }
 
+    /**
+     * Ensures digits in the DNA string are rejected.
+     */
     @Test
     void dnaToCodons_invalidDigit_throwsErrorMessage() {
         DNAHelpers helpers = new DNAHelpers();
@@ -115,6 +148,9 @@ class DNAHelpersTest {
         assertEquals("DNA contains invalid characters", ex.getMessage());
     }
 
+    /**
+     * Verifies that exact codon matches are counted correctly.
+     */
     @Test
     void countCodonOccurrences_countsExactMatches() {
         DNAHelpers helpers = new DNAHelpers();
@@ -129,6 +165,9 @@ class DNAHelpersTest {
         assertTrue(output.contains("Codon ACG appears 2 times."));
     }
 
+    /**
+     * Verifies that zero occurrences are reported when the codon is absent.
+     */
     @Test
     void countCodonOccurrences_returnsZeroWhenNotFound() {
         DNAHelpers helpers = new DNAHelpers();
@@ -143,6 +182,9 @@ class DNAHelpersTest {
         assertTrue(output.contains("Codon AAA appears 0 times."));
     }
 
+    /**
+     * Ensures a helpful message is printed when no codons are provided.
+     */
     @Test
     void countCodonOccurrences_noCodonsAvailable_printsMessage() {
         DNAHelpers helpers = new DNAHelpers();
@@ -157,6 +199,9 @@ class DNAHelpersTest {
         assertTrue(output.contains("No codons available."));
     }
 
+    /**
+     * Ensures a helpful message is printed when the codon list is null.
+     */
     @Test
     void countCodonOccurrences_nullCodons_printsMessage() {
         DNAHelpers helpers = new DNAHelpers();
@@ -170,6 +215,9 @@ class DNAHelpersTest {
         assertTrue(output.contains("No codons available."));
     }
 
+    /**
+     * Ensures invalid codon input triggers a reprompt before counting.
+     */
     @Test
     void countCodonOccurrences_repromptsOnInvalidInput() {
         DNAHelpers helpers = new DNAHelpers();
@@ -185,6 +233,9 @@ class DNAHelpersTest {
         assertTrue(output.contains("Codon ACG appears 1 times."));
     }
 
+    /**
+     * Ensures incorrect codon length triggers a reprompt before counting.
+     */
     @Test
     void countCodonOccurrences_repromptsOnWrongLength() {
         DNAHelpers helpers = new DNAHelpers();
@@ -200,6 +251,9 @@ class DNAHelpersTest {
         assertTrue(output.contains("Codon ACG appears 1 times."));
     }
 
+    /**
+     * Ensures blank codon input triggers a reprompt before counting.
+     */
     @Test
     void countCodonOccurrences_repromptsOnBlankInput() {
         DNAHelpers helpers = new DNAHelpers();
@@ -215,6 +269,9 @@ class DNAHelpersTest {
         assertTrue(output.contains("Codon ACG appears 1 times."));
     }
 
+    /**
+     * Ensures internal whitespace is treated as invalid input.
+     */
     @Test
     void dnaToCodons_internalWhitespace_throwsErrorMessage() {
         DNAHelpers helpers = new DNAHelpers();
@@ -227,6 +284,9 @@ class DNAHelpersTest {
         assertEquals("DNA contains invalid characters", ex.getMessage());
     }
 
+    /**
+     * Ensures newline characters in DNA input are rejected.
+     */
     @Test
     void dnaToCodons_newline_throwsErrorMessage() {
         DNAHelpers helpers = new DNAHelpers();

@@ -8,10 +8,18 @@ import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Integration tests for application startup.
+ */
 @Tag("integration")
 @Tag("smoke")
 class MainIntegrationTest {
 
+    /**
+     * Ensures the application prints the welcome banner and exit message.
+     *
+     * @throws Exception when the main method fails to execute
+     */
     @Test
     void main_runsAndPrintsWelcomeAndExit() throws Exception {
         InputStream originalIn = System.in;
