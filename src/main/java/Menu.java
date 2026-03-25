@@ -6,24 +6,39 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+/**
+ * Console menu for executing DNA Lab workflows.
+ */
 public class Menu {
 
     //Scanner scanner = new Scanner(System.in);  // Create a Scanner object
     private final Scanner scanner;
     private final PrintStream out;
 
+    /**
+     * Creates a menu with injected input and output streams.
+     *
+     * @param scanner scanner used for user input
+     * @param out     output stream for menu prompts and messages
+     */
     public Menu(Scanner scanner, PrintStream out) {
         this.scanner = scanner;
         this.out = out;
     }
 
 
+    /**
+     * Prints the welcome banner.
+     */
     public void welcomeMenu() {
         out.println("---------------------------------");
         out.println("---- Welcome to the DNA Lab! ----");
         out.println("---------------------------------");
     }
 
+    /**
+     * Prints the numbered menu options.
+     */
     private void printMenu() {
         out.println("\n1. DNA Match");
         out.println("2. DNA Replication");
@@ -36,6 +51,11 @@ public class Menu {
         out.println("9. Exit\n");
     }
 
+    /**
+     * Prompts until the user enters a valid option between 1 and 9.
+     *
+     * @return the validated menu option
+     */
     private int readOption() {
         while (true) {
 
@@ -59,6 +79,9 @@ public class Menu {
         }
     }
 
+    /**
+     * Runs the main analysis loop until the user chooses Exit.
+     */
     public void analysisMenu() {
         boolean running = true;
         while (running) {

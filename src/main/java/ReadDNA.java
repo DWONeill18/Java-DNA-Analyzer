@@ -3,14 +3,28 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Optional;
 
+/**
+ * Reads DNA content from a file with basic error reporting.
+ */
 public class ReadDNA {
 
     private final PrintStream out;
 
+    /**
+     * Creates a reader that writes errors to the given stream.
+     *
+     * @param out output stream for error messages
+     */
     public ReadDNA(PrintStream out) {
         this.out = out;
     }
 
+    /**
+     * Reads a file into a single string.
+     *
+     * @param fileName path to the file to read
+     * @return an {@link Optional} containing file contents, or empty when the file is missing or empty
+     */
     public Optional<String> readFile(String fileName) {
         StringBuilder sb = new StringBuilder();
 
