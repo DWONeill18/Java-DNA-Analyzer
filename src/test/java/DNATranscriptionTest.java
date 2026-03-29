@@ -15,7 +15,7 @@ public class DNATranscriptionTest {
 
         String result = dnaTranscription.transcription(List.of("ACG", "TGA", "CCT"));
 
-        assertEquals("UGCACUGGA", result));
+        assertEquals("UGCACUGGA", result);
     }
 
     @Test
