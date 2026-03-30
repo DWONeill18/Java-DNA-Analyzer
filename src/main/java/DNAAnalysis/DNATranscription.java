@@ -10,7 +10,21 @@ public class DNATranscription {
             throw new IllegalArgumentException("Codon list must not be null or empty");
         }
 
-        StringBuilder sb = new StringBuilder();
+        int totalLength = 0;
+        for (String codon : codons) {
+            if (codon == null || codon.isBlank()) {
+                continue;
+            }
+            totalLength += codon.trim().length();
+        }
+
+        StringBuilder sb = getStringBuilder(codons, totalLength);
+
+        return sb.toString();
+    }
+
+    private StringBuilder getStringBuilder(List<String> codons, int totalLength) {
+        StringBuilder sb = new StringBuilder(totalLength);
         for (String codon : codons) {
             if (codon == null || codon.isBlank()) {
                 continue;
@@ -25,8 +39,7 @@ public class DNATranscription {
         if (sb.length() == 0) {
             throw new IllegalArgumentException("No usable codons after filtering");
         }
-
-        return sb.toString();
+        return sb;
     }
 
     private char complementOf(char base) {
