@@ -7,7 +7,7 @@ public class DNATranscription {
     public String transcription(List<String> codons) {
 
         if (codons == null || codons.isEmpty()) {
-            return "No codons available";
+            throw new IllegalArgumentException("Codon list must not be null or empty");
         }
 
         StringBuilder sb = new StringBuilder();
@@ -18,16 +18,12 @@ public class DNATranscription {
 
             String normalized = codon.trim().toUpperCase();
             for (int i = 0; i < normalized.length(); i++) {
-                char base = normalized.charAt(i);
-                if (!isValidBase(base)) {
-                    throw new IllegalArgumentException("DNA contains invalid characters");
-                }
-                sb.append(complementOf(base));
+                sb.append(complementOf(normalized.charAt(i)));
             }
         }
 
         if (sb.length() == 0) {
-            return "No codons available";
+            throw new IllegalArgumentException("No usable codons after filtering");
         }
 
         return sb.toString();
@@ -39,12 +35,7 @@ public class DNATranscription {
             case 'T' -> 'A';
             case 'C' -> 'G';
             case 'G' -> 'C';
-            default -> throw new IllegalArgumentException("DNA contains invalid characters");
+            default -> throw new IllegalArgumentException("DNA contains invalid characters: " + base);
         };
     }
-
-    private boolean isValidBase(char base) {
-        return base == 'A' || base == 'C' || base == 'G' || base == 'T';
-    }
-
 }
