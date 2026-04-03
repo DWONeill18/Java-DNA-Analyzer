@@ -120,25 +120,6 @@ class MenuIntegrationTest {
     }
 
     /**
-     * Verifies option 3 prints the transcription label and then exits.
-     *
-     * @throws IOException when menu IO fails
-     */
-    @Test
-    void analysisMenu_option3_printsDnaTranscription_andCloses() throws IOException {
-        String input = "3\n9\n";
-        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
-        menu.analysisMenu();
-        String output = out.toString();
-
-        assertTrue(output.contains("DNA Transcription"));
-        assertTrue(output.contains("Closing down the lab"));
-    }
-
-    /**
      * Verifies option 3 reads DNA, transcribes it, and writes output to a file.
      *
      * @throws Exception when file IO fails
