@@ -6,8 +6,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * Unit tests for {@link DNAAnalysis.DNATranscription}.
+ */
 public class DNATranscriptionTest {
 
+    /**
+     * Verifies multiple codons are transcribed into a single RNA sequence.
+     */
     @Test
     void transcription_multipleCodons_returnsTranscribedSequence() {
 
@@ -18,6 +24,9 @@ public class DNATranscriptionTest {
         assertEquals("UGCACUGGA", result);
     }
 
+    /**
+     * Ensures empty codon lists throw an exception.
+     */
     @Test
     void transcription_emptyList_throwsException() {
         DNATranscription dnaTranscription = new DNATranscription();
@@ -30,6 +39,9 @@ public class DNATranscriptionTest {
         assertEquals("Codon list must not be null or empty", exception.getMessage());
     }
 
+    /**
+     * Ensures null codon lists throw an exception.
+     */
     @Test
     void transcription_nullList_throwsException() {
         DNATranscription dnaTranscription = new DNATranscription();
@@ -42,6 +54,9 @@ public class DNATranscriptionTest {
         assertEquals("Codon list must not be null or empty", exception.getMessage());
     }
 
+    /**
+     * Ensures blank codons are rejected when no usable codons remain.
+     */
     @Test
     void transcription_allBlankCodons_throwsException() {
         DNATranscription dnaTranscription = new DNATranscription();
@@ -54,6 +69,9 @@ public class DNATranscriptionTest {
         assertEquals("No usable codons after filtering", exception.getMessage());
     }
 
+    /**
+     * Ensures invalid DNA bases are rejected with a helpful message.
+     */
     @Test
     void transcription_invalidBase_throwsException() {
         DNATranscription dnaTranscription = new DNATranscription();
@@ -66,6 +84,9 @@ public class DNATranscriptionTest {
         assertEquals("DNA contains invalid characters: X", exception.getMessage());
     }
 
+    /**
+     * Verifies lowercase codons are normalized before transcription.
+     */
     @Test
     void transcription_lowercaseCodon_transcribesCorrectly() {
         DNATranscription dnaTranscription = new DNATranscription();
