@@ -1,4 +1,5 @@
 import DNAAnalysis.DNAReplication;
+import DNAAnalysis.DNATranscription;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -157,7 +158,50 @@ public class Menu {
                     }
 
                 }
-                case 3 -> out.println("DNA Transcription");
+                case 3 -> {
+
+                    out.println("DNA Transcription");
+
+                    out.print("Enter file path: ");
+                    scanner.nextLine();
+                    String fileName = scanner.nextLine();
+
+                    ReadDNA readDNA = new ReadDNA(out);
+                    Optional<String> content = readDNA.readFile(fileName);
+                    if (content.isEmpty()) {
+                        out.println("No data to write; aborting.");
+                        break;
+                    }
+
+                    DNAHelpers helpers = new DNAHelpers();
+                    List<String> codons;
+                    try {
+                        codons = helpers.dnaToCodons(content.get());
+                    } catch (IllegalArgumentException ex) {
+                        out.println(ex.getMessage());
+                        break;
+                    }
+
+                    DNATranscription dnaTranscription = new DNATranscription();
+                    String result;
+                    try {
+                        result = dnaTranscription.transcription(codons);
+                    } catch (IllegalArgumentException ex) {
+                        out.println(ex.getMessage());
+                        break;
+                    }
+
+                    out.print("Enter file path to output file: ");
+                    String outputFileName = scanner.nextLine();
+
+                    WriteDNA writeDNA = new WriteDNA();
+                    try {
+                        writeDNA.writeFile(outputFileName, result);
+                    } catch (IOException e) {
+                        out.println("Error while writing file");
+                    }
+
+                }
                 case 4 -> out.println("DNA Translation");
                 case 5 -> out.println("Random DNA Generator");
                 case 6 -> out.println("Mutation");

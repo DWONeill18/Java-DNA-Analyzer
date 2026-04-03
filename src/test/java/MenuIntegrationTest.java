@@ -139,6 +139,80 @@ class MenuIntegrationTest {
     }
 
     /**
+     * Verifies option 3 reads DNA, transcribes it, and writes output to a file.
+     *
+     * @throws Exception when file IO fails
+     */
+    @Test
+    void analysisMenu_option3_readsAndWritesTranscription() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Path outputFile = tempDir.resolve("output-rna.txt");
+        Files.writeString(inputFile, "ACGTGA");
+
+        String input = "3\n" + inputFile + "\n" + outputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+        String output = out.toString();
+
+        assertTrue(output.contains("DNA Transcription"));
+        assertTrue(output.contains("Enter file path to output file: "));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(Files.exists(outputFile));
+        assertEquals("UGCACU", Files.readString(outputFile));
+    }
+
+    /**
+     * Verifies option 3 reports invalid DNA and does not prompt for output path.
+     *
+     * @throws Exception when file IO fails
+     */
+    @Test
+    void analysisMenu_option3_invalidDna_printsErrorAndDoesNotPromptForOutputPath() throws Exception {
+        Path inputFile = tempDir.resolve("invalid-dna.txt");
+        Files.writeString(inputFile, "ACGTG");
+
+        String input = "3\n" + inputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+        String output = out.toString();
+
+        assertTrue(output.contains("DNA Transcription"));
+        assertTrue(output.contains("DNA length must be divisible by 3"));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter file path to output file: "));
+    }
+
+    /**
+     * Verifies option 3 reports empty codon lists and does not prompt for output.
+     *
+     * @throws Exception when file IO fails
+     */
+    @Test
+    void analysisMenu_option3_blankDna_printsErrorAndDoesNotPromptForOutputPath() throws Exception {
+        Path inputFile = tempDir.resolve("blank-dna.txt");
+        Files.writeString(inputFile, "   ");
+
+        String input = "3\n" + inputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+        String output = out.toString();
+
+        assertTrue(output.contains("DNA Transcription"));
+        assertTrue(output.contains("Codon list must not be null or empty"));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter file path to output file: "));
+    }
+
+    /**
      * Verifies option 4 prints the translation label and then exits.
      *
      * @throws IOException when menu IO fails
