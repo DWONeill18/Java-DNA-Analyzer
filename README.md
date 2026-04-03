@@ -36,12 +36,14 @@ Enter file path to output file: out/dna-replication.txt
 ```
 
 ### Option 3: DNA Transcription
-Currently prints the label "DNA Transcription" only (no prompts or file output yet).
+Transcribes a DNA strand into its mRNA complement. The option reads a DNA file, transcribes it, then writes the RNA output to a file.
 
 Example:
 ```text
 Enter option (1-9): 3
 DNA Transcription
+Enter file path: src/test/resources/sample-dna.txt
+Enter file path to output file: out/rna-transcription.txt
 ```
 
 ### Option 4: DNA Translation
