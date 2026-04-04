@@ -147,6 +147,10 @@ public class Menu {
                         out.println(ex.getMessage());
                         break;
                     }
+                    if (codons.isEmpty()) {
+                        out.println("No codons available.");
+                        break;
+                    }
 
                     DNAReplication dnaReplication = new DNAReplication();
                     String result;
@@ -189,6 +193,10 @@ public class Menu {
                         codons = helpers.dnaToCodons(content.get());
                     } catch (IllegalArgumentException ex) {
                         out.println(ex.getMessage());
+                        break;
+                    }
+                    if (codons.isEmpty()) {
+                        out.println("No codons available.");
                         break;
                     }
 
