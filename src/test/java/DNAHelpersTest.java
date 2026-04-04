@@ -69,18 +69,15 @@ class DNAHelpersTest {
     }
 
     /**
-     * Ensures invalid characters throw with a clear error message.
+     * Ensures invalid characters are preserved when splitting into codons.
      */
     @Test
-    void dnaToCodons_invalidCharacters_throwsErrorMessage() {
+    void dnaToCodons_invalidCharacters_returnsCodons() {
         DNAHelpers helpers = new DNAHelpers();
 
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> helpers.dnaToCodons("ACGTX")
-        );
+        List<String> codons = helpers.dnaToCodons("ACGTXG");
 
-        assertEquals("DNA contains invalid characters", ex.getMessage());
+        assertEquals(List.of("ACG", "TXG"), codons);
     }
 
     /**
@@ -134,18 +131,15 @@ class DNAHelpersTest {
     }
 
     /**
-     * Ensures digits in the DNA string are rejected.
+     * Ensures digits are preserved when splitting into codons.
      */
     @Test
-    void dnaToCodons_invalidDigit_throwsErrorMessage() {
+    void dnaToCodons_invalidDigit_returnsCodons() {
         DNAHelpers helpers = new DNAHelpers();
 
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> helpers.dnaToCodons("ACG1TG")
-        );
+        List<String> codons = helpers.dnaToCodons("ACG1TG");
 
-        assertEquals("DNA contains invalid characters", ex.getMessage());
+        assertEquals(List.of("ACG", "1TG"), codons);
     }
 
     /**
@@ -270,10 +264,10 @@ class DNAHelpersTest {
     }
 
     /**
-     * Ensures internal whitespace is treated as invalid input.
+     * Ensures internal whitespace still fails length validation.
      */
     @Test
-    void dnaToCodons_internalWhitespace_throwsErrorMessage() {
+    void dnaToCodons_internalWhitespace_throwsLengthErrorMessage() {
         DNAHelpers helpers = new DNAHelpers();
 
         IllegalArgumentException ex = assertThrows(
@@ -281,14 +275,14 @@ class DNAHelpersTest {
                 () -> helpers.dnaToCodons("ACG TGA")
         );
 
-        assertEquals("DNA contains invalid characters", ex.getMessage());
+        assertEquals("DNA length must be divisible by 3", ex.getMessage());
     }
 
     /**
-     * Ensures newline characters in DNA input are rejected.
+     * Ensures newline characters still fail length validation.
      */
     @Test
-    void dnaToCodons_newline_throwsErrorMessage() {
+    void dnaToCodons_newline_throwsLengthErrorMessage() {
         DNAHelpers helpers = new DNAHelpers();
 
         IllegalArgumentException ex = assertThrows(
@@ -296,6 +290,6 @@ class DNAHelpersTest {
                 () -> helpers.dnaToCodons("ACG\nTGA")
         );
 
-        assertEquals("DNA contains invalid characters", ex.getMessage());
+        assertEquals("DNA length must be divisible by 3", ex.getMessage());
     }
 }
