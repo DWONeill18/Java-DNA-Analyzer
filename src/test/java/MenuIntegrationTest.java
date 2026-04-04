@@ -495,6 +495,52 @@ class MenuIntegrationTest {
     }
 
     /**
+     * Verifies invalid DNA length in option 1 prints an error and skips output prompts.
+     *
+     * @throws Exception when file IO fails
+     */
+    @Test
+    void analysisMenu_option1_invalidLength_doesNotPromptForOutputPath() throws Exception {
+        Path inputFile = tempDir.resolve("invalid-length-dna.txt");
+        Files.writeString(inputFile, "ACGTG");
+
+        String input = "1\n" + inputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+
+        String output = out.toString();
+        assertTrue(output.contains("DNA length must be divisible by 3"));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter file path to output file: "));
+    }
+
+    /**
+     * Verifies invalid DNA characters in option 1 print an error and skip output prompts.
+     *
+     * @throws Exception when file IO fails
+     */
+    @Test
+    void analysisMenu_option1_invalidCharacters_doesNotPromptForOutputPath() throws Exception {
+        Path inputFile = tempDir.resolve("invalid-characters-dna.txt");
+        Files.writeString(inputFile, "ACGTXG");
+
+        String input = "1\n" + inputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+
+        String output = out.toString();
+        assertTrue(output.contains("DNA contains invalid characters"));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter file path to output file: "));
+    }
+
+    /**
      * Verifies codon counts of zero are reported correctly.
      *
      * @throws Exception when file IO fails
