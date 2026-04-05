@@ -2,11 +2,13 @@ import DNAAnalysis.DNAReplication;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit tests for {@link DNAAnalysis.DNAReplication}.
@@ -87,6 +89,18 @@ class DNAReplicationTest {
     }
 
     /**
+     * Ensures null and blank codons are ignored when valid codons exist.
+     */
+    @Test
+    void replication_mixedBlankAndNullCodons_returnsComplementarySequence() {
+        DNAReplication replication = new DNAReplication();
+
+        String result = replication.replication(java.util.Arrays.asList("   ", null, "ACG"));
+
+        assertEquals("TGC", result);
+    }
+
+    /**
      * Ensures invalid bases trigger an {@link IllegalArgumentException}.
      */
     @Test
@@ -99,5 +113,38 @@ class DNAReplicationTest {
         );
 
         assertEquals("DNA contains invalid characters", ex.getMessage());
+    }
+
+    /**
+     * Ensures invalid bases in mixed codons trigger the default complement branch.
+     */
+    @Test
+    void replication_invalidBaseInMixedCodons_throwsErrorMessage() {
+        DNAReplication replication = new DNAReplication();
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> replication.replication(List.of("ACG", "TXA"))
+        );
+
+        assertEquals("DNA contains invalid characters", ex.getMessage());
+    }
+
+    /**
+     * Ensures the complement switch default branch throws for invalid bases.
+     */
+    @Test
+    void complementOf_invalidBase_throwsErrorMessage() throws Exception {
+        DNAReplication replication = new DNAReplication();
+        Method complementOf = DNAReplication.class.getDeclaredMethod("complementOf", char.class);
+        complementOf.setAccessible(true);
+
+        InvocationTargetException ex = assertThrows(
+                InvocationTargetException.class,
+                () -> complementOf.invoke(replication, 'X')
+        );
+
+        assertTrue(ex.getCause() instanceof IllegalArgumentException);
+        assertEquals("DNA contains invalid characters", ex.getCause().getMessage());
     }
 }
