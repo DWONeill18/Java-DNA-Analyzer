@@ -15,16 +15,13 @@ public class DNAHelpers {
      *
      * @param dna the raw DNA string to split; may be {@code null} or blank
      * @return an immutable list of codons, or an empty list when input is {@code null} or blank
-     * @throws IllegalArgumentException when the DNA contains invalid characters or is not divisible by 3
+     * @throws IllegalArgumentException when the DNA length is not divisible by 3
      */
     public List<String> dnaToCodons(String dna) {
         if (dna == null || dna.isBlank()) {
             return List.of();
         }
         String normalized = dna.trim().toUpperCase();
-        if (!DNA_PATTERN.matcher(normalized).matches()) {
-            throw new IllegalArgumentException("DNA contains invalid characters");
-        }
         if (normalized.length() % 3 != 0) {
             throw new IllegalArgumentException("DNA length must be divisible by 3");
         }

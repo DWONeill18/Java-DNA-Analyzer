@@ -104,11 +104,15 @@ public class Menu {
                     }
 
                     DNAHelpers helpers = new DNAHelpers();
-                    helpers.countCodonOccurrences(
-                            helpers.dnaToCodons(content.get()),
-                            scanner,
-                            out
-                    );
+                    List<String> codons;
+                    try {
+                        codons = helpers.dnaToCodons(content.get());
+                    } catch (IllegalArgumentException ex) {
+                        out.println(ex.getMessage());
+                        break;
+                    }
+
+                    helpers.countCodonOccurrences(codons, scanner, out);
 
                     out.print("Enter file path to output file: ");
                     String outputFileName = scanner.nextLine();
@@ -143,9 +147,19 @@ public class Menu {
                         out.println(ex.getMessage());
                         break;
                     }
+                    if (codons.isEmpty()) {
+                        out.println("No codons available.");
+                        break;
+                    }
 
                     DNAReplication dnaReplication = new DNAReplication();
-                    String result = dnaReplication.replication(codons);
+                    String result;
+                    try {
+                        result = dnaReplication.replication(codons);
+                    } catch (IllegalArgumentException ex) {
+                        out.println(ex.getMessage());
+                        break;
+                    }
 
                     out.print("Enter file path to output file: ");
                     String outputFileName = scanner.nextLine();
@@ -179,6 +193,10 @@ public class Menu {
                         codons = helpers.dnaToCodons(content.get());
                     } catch (IllegalArgumentException ex) {
                         out.println(ex.getMessage());
+                        break;
+                    }
+                    if (codons.isEmpty()) {
+                        out.println("No codons available.");
                         break;
                     }
 

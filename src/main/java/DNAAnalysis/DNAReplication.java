@@ -37,7 +37,6 @@ public class DNAReplication {
         if (complementary.length() == 0) {
             return "No codons available";
         }
-
         return complementary.toString();
     }
 
