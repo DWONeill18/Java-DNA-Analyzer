@@ -252,6 +252,48 @@ class MenuIntegrationTest {
     }
 
     /**
+     * Verifies option 6 does not prompt for file paths before exiting.
+     *
+     * @throws IOException when menu IO fails
+     */
+    @Test
+    void analysisMenu_option6_doesNotPromptForFilePath_andCloses() throws IOException {
+        String input = "6\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+        String output = out.toString();
+
+        assertTrue(output.contains("Mutation"));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter file path: "));
+        assertTrue(!output.contains("Enter file path to output file: "));
+    }
+
+    /**
+     * Verifies option 6 returns to the menu before exiting.
+     *
+     * @throws IOException when menu IO fails
+     */
+    @Test
+    void analysisMenu_option6_returnsToMenuBeforeExit() throws IOException {
+        String input = "6\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+        String output = out.toString();
+
+        int promptCount = output.split("Enter option \\(1-9\\): ", -1).length - 1;
+        assertTrue(output.contains("Mutation"));
+        assertTrue(promptCount >= 2);
+        assertTrue(output.contains("Closing down the lab"));
+    }
+
+    /**
      * Verifies option 7 prints the reverse transcription label and then exits.
      *
      * @throws IOException when menu IO fails
