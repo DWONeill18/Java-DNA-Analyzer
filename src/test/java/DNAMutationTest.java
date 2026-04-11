@@ -19,7 +19,8 @@ class DNAMutationTest {
         List<String> codons = List.of("ACG", "TGA", "CCT");
         int baseCount = 6;
 
-        List<String> result = (List<String>) invokeMutate(codons, baseCount);
+        DNAMutation mutation = new DNAMutation();
+        List<String> result = (List<String>) mutation.mutate(codons, baseCount);
 
         assertEquals(codons.size() + 1, result.size());
         assertTrue(result.contains("ACG"));
@@ -35,11 +36,13 @@ class DNAMutationTest {
         List<String> codons = List.of("ACG", "TGA", "CCT");
         int baseCount = 4;
 
+        DNAMutation mutation = new DNAMutation();
+
         IllegalArgumentException ex = assertThrows(
                 IllegalArgumentException.class,
-                () -> invokeMutate(codons, baseCount)
+                () -> mutation.mutate(codons, baseCount)
         );
 
-        assertEquals("Number of bases added must be a multiple of 3",  ex.getMessage());
+        assertEquals("Mutation size must be a multiple of 3",  ex.getMessage());
     }
 }
