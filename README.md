@@ -65,12 +65,15 @@ Random DNA Generator
 ```
 
 ### Option 6: Random DNA Mutation
-Currently prints the label "Mutation" only (no prompts or file output yet).
+Reads a DNA file, inserts a randomly generated base sequence into the codon list, and writes the mutated list to a file. The number of bases to insert must be greater than 0 and divisible by 3.
 
 Example:
 ```text
 Enter option (1-9): 6
 Mutation
+Enter file path: src/test/resources/sample-dna.txt
+Enter number of bases you want to randomly insert: 6
+Enter file path to output file: out/dna-mutation.txt
 ```
 
 ### Option 7: Reverse Transcription
