@@ -340,6 +340,106 @@ class MenuIntegrationTest {
     }
 
     /**
+     * Verifies option 6 read failures do not prompt for base count or output path.
+     *
+     * @throws Exception when file IO fails
+     */
+    @Test
+    void analysisMenu_option6_readFailure_doesNotPromptForBaseCountOrOutputPath() throws Exception {
+        Path missingFile = tempDir.resolve("missing-dna.txt");
+
+        String input = "6\n" + missingFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+        String output = out.toString();
+
+        assertTrue(output.contains("Mutation"));
+        assertTrue(output.contains("Error while reading file"));
+        assertTrue(output.contains("No data to write; aborting."));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter number of bases you want to randomly insert: "));
+        assertTrue(!output.contains("Enter file path to output file: "));
+    }
+
+    /**
+     * Verifies empty input files in option 6 skip base count and output prompts.
+     *
+     * @throws Exception when file IO fails
+     */
+    @Test
+    void analysisMenu_option6_emptyFile_doesNotPromptForBaseCountOrOutputPath() throws Exception {
+        Path emptyFile = tempDir.resolve("empty-dna.txt");
+        Files.writeString(emptyFile, "");
+
+        String input = "6\n" + emptyFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+        String output = out.toString();
+
+        assertTrue(output.contains("Mutation"));
+        assertTrue(output.contains("Error: file is empty"));
+        assertTrue(output.contains("No data to write; aborting."));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter number of bases you want to randomly insert: "));
+        assertTrue(!output.contains("Enter file path to output file: "));
+    }
+
+    /**
+     * Verifies blank DNA in option 6 skips base count and output prompts.
+     *
+     * @throws Exception when file IO fails
+     */
+    @Test
+    void analysisMenu_option6_blankDna_doesNotPromptForBaseCountOrOutputPath() throws Exception {
+        Path inputFile = tempDir.resolve("blank-dna.txt");
+        Files.writeString(inputFile, "   ");
+
+        String input = "6\n" + inputFile + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+        String output = out.toString();
+
+        assertTrue(output.contains("Mutation"));
+        assertTrue(output.contains("No codons available."));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter number of bases you want to randomly insert: "));
+        assertTrue(!output.contains("Enter file path to output file: "));
+    }
+
+    /**
+     * Verifies option 6 surfaces write failures when output cannot be written.
+     *
+     * @throws Exception when file IO fails
+     */
+    @Test
+    void analysisMenu_option6_writeFailure_printsError() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Files.writeString(inputFile, "ACGTGA");
+
+        String input = "6\n" + inputFile + "\n6\n" + tempDir + "\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+        String output = out.toString();
+
+        assertTrue(output.contains("Mutation"));
+        assertTrue(output.contains("Enter file path to output file: "));
+        assertTrue(output.contains("Error while writing file"));
+        assertTrue(output.contains("Closing down the lab"));
+    }
+
+    /**
      * Verifies option 6 reports invalid DNA and does not prompt for base count.
      *
      * @throws Exception when file IO fails
