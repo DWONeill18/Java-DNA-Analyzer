@@ -954,6 +954,12 @@ class MenuIntegrationTest {
         assertTrue(!secondOutput.contains("Enter file path to output file: "));
     }
 
+    /**
+     * Parses a List#toString formatted codon list (e.g. "[ACG, TGA]") into elements.
+     *
+     * @param content list string representation
+     * @return parsed codon list
+     */
     private List<String> parseCodonList(String content) {
         String trimmed = content.trim();
         if (trimmed.equals("[]")) {

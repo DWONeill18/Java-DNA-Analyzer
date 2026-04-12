@@ -90,6 +90,13 @@ class DNAMutationTest {
         assertTrue(containsElementOfLengthWithBases(result, 3));
     }
 
+    /**
+     * Checks whether a mutation string of the requested length exists in the list.
+     *
+     * @param result mutated codon list
+     * @param length expected mutation length
+     * @return {@code true} when a matching base-only element is found
+     */
     private boolean containsElementOfLengthWithBases(List<String> result, int length) {
         // Detects whether the mutation string exists without relying on its random value.
         for (String item : result) {
@@ -100,6 +107,13 @@ class DNAMutationTest {
         return false;
     }
 
+    /**
+     * Verifies the original codons appear in the mutated list in order.
+     *
+     * @param original original codon list
+     * @param mutated mutated codon list
+     * @return {@code true} when the original order is preserved
+     */
     private boolean isSubsequence(List<String> original, List<String> mutated) {
         // Ensures the original codons remain in order after insertion.
         int i = 0;

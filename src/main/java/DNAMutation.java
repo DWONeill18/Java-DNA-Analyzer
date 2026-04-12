@@ -14,9 +14,9 @@ public class DNAMutation {
      * Generates a random base sequence of the requested length and inserts it into the codon list.
      *
      * @param codons    list of codons to mutate
-     * @param baseCount number of random bases to insert; must be a multiple of 3
+     * @param baseCount number of random bases to insert; must be greater than 0 and a multiple of 3
      * @return a new list containing the mutation
-     * @throws IllegalArgumentException when {@code baseCount} is not a multiple of 3
+     * @throws IllegalArgumentException when {@code baseCount} is not greater than 0 or not a multiple of 3
      */
     public List<String> mutate(List<String> codons, int baseCount) {
         if (baseCount <= 0) {
