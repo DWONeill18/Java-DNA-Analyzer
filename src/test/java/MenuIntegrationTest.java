@@ -316,6 +316,30 @@ class MenuIntegrationTest {
     }
 
     /**
+     * Verifies option 6 rejects non-numeric base counts and skips output prompts.
+     *
+     * @throws Exception when file IO fails
+     */
+    @Test
+    void analysisMenu_option6_nonNumericBaseCount_printsErrorAndDoesNotPromptForOutputPath() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Files.writeString(inputFile, "ACGTGA");
+
+        String input = "6\n" + inputFile + "\nabc\n9\n";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Menu menu = new Menu(new Scanner(in), new PrintStream(out));
+        menu.analysisMenu();
+        String output = out.toString();
+
+        assertTrue(output.contains("Mutation"));
+        assertTrue(output.contains("Invalid input, please enter a number."));
+        assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter file path to output file: "));
+    }
+
+    /**
      * Verifies option 6 reports invalid DNA and does not prompt for base count.
      *
      * @throws Exception when file IO fails

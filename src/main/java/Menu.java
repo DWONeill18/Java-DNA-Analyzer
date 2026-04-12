@@ -251,7 +251,13 @@ public class Menu {
                     }
 
                     out.print("Enter number of bases you want to randomly insert: ");
-                    int baseCount = Integer.parseInt(scanner.nextLine());
+                    int baseCount;
+                    try {
+                        baseCount = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException ex) {
+                        out.println("Invalid input, please enter a number.");
+                        break;
+                    }
 
                     DNAMutation dnaMutation = new DNAMutation();
                     String result;
