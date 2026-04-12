@@ -251,8 +251,7 @@ public class Menu {
                     }
 
                     out.print("Enter number of bases you want to randomly insert: ");
-                    scanner.nextLine();
-                    int baseCount = scanner.nextInt();
+                    int baseCount = Integer.parseInt(scanner.nextLine());
 
                     DNAMutation dnaMutation = new DNAMutation();
                     String result;

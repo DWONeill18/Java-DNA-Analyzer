@@ -5,6 +5,8 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -233,13 +235,17 @@ class MenuIntegrationTest {
     }
 
     /**
-     * Verifies option 6 prints the mutation label and then exits.
+     * Verifies option 6 reads DNA, mutates it, and writes output to a file.
      *
-     * @throws IOException when menu IO fails
+     * @throws Exception when file IO fails
      */
     @Test
-    void analysisMenu_option6_printsMutation_andCloses() throws IOException {
-        String input = "6\n9\n";
+    void analysisMenu_option6_readsAndWritesMutation() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Path outputFile = tempDir.resolve("output-dna.txt");
+        Files.writeString(inputFile, "ACGTGA");
+
+        String input = "6\n" + inputFile + "\n6\n" + outputFile + "\n9\n";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -248,17 +254,30 @@ class MenuIntegrationTest {
         String output = out.toString();
 
         assertTrue(output.contains("Mutation"));
+        assertTrue(output.contains("Enter number of bases you want to randomly insert: "));
+        assertTrue(output.contains("Enter file path to output file: "));
         assertTrue(output.contains("Closing down the lab"));
+        assertTrue(Files.exists(outputFile));
+
+        List<String> mutated = parseCodonList(Files.readString(outputFile));
+        int totalBases = mutated.stream().mapToInt(String::length).sum();
+        assertEquals("ACGTGA".length() + 6, totalBases);
+        assertTrue(mutated.contains("ACG"));
+        assertTrue(mutated.contains("TGA"));
+        assertTrue(mutated.stream().anyMatch(item -> item.length() == 6 && item.matches("[ACGT]+")));
     }
 
     /**
-     * Verifies option 6 does not prompt for file paths before exiting.
+     * Verifies option 6 rejects invalid mutation lengths and skips output prompts.
      *
-     * @throws IOException when menu IO fails
+     * @throws Exception when file IO fails
      */
     @Test
-    void analysisMenu_option6_doesNotPromptForFilePath_andCloses() throws IOException {
-        String input = "6\n9\n";
+    void analysisMenu_option6_invalidBaseCount_printsErrorAndDoesNotPromptForOutputPath() throws Exception {
+        Path inputFile = tempDir.resolve("input-dna.txt");
+        Files.writeString(inputFile, "ACGTGA");
+
+        String input = "6\n" + inputFile + "\n4\n9\n";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -267,19 +286,22 @@ class MenuIntegrationTest {
         String output = out.toString();
 
         assertTrue(output.contains("Mutation"));
+        assertTrue(output.contains("Mutation size must be a multiple of 3"));
         assertTrue(output.contains("Closing down the lab"));
-        assertTrue(!output.contains("Enter file path: "));
         assertTrue(!output.contains("Enter file path to output file: "));
     }
 
     /**
-     * Verifies option 6 returns to the menu before exiting.
+     * Verifies option 6 reports invalid DNA and does not prompt for base count.
      *
-     * @throws IOException when menu IO fails
+     * @throws Exception when file IO fails
      */
     @Test
-    void analysisMenu_option6_returnsToMenuBeforeExit() throws IOException {
-        String input = "6\n9\n";
+    void analysisMenu_option6_invalidDna_printsErrorAndDoesNotPromptForBaseCount() throws Exception {
+        Path inputFile = tempDir.resolve("invalid-dna.txt");
+        Files.writeString(inputFile, "ACGTG");
+
+        String input = "6\n" + inputFile + "\n9\n";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -287,10 +309,11 @@ class MenuIntegrationTest {
         menu.analysisMenu();
         String output = out.toString();
 
-        int promptCount = output.split("Enter option \\(1-9\\): ", -1).length - 1;
         assertTrue(output.contains("Mutation"));
-        assertTrue(promptCount >= 2);
+        assertTrue(output.contains("DNA length must be divisible by 3"));
         assertTrue(output.contains("Closing down the lab"));
+        assertTrue(!output.contains("Enter number of bases you want to randomly insert: "));
+        assertTrue(!output.contains("Enter file path to output file: "));
     }
 
     /**
@@ -905,5 +928,21 @@ class MenuIntegrationTest {
         assertTrue(secondOutput.contains("Error while reading file"));
         assertTrue(secondOutput.contains("No data to write; aborting."));
         assertTrue(!secondOutput.contains("Enter file path to output file: "));
+    }
+
+    private List<String> parseCodonList(String content) {
+        String trimmed = content.trim();
+        if (trimmed.equals("[]")) {
+            return List.of();
+        }
+        String inner = trimmed.substring(1, trimmed.length() - 1);
+        String[] parts = inner.split(", ");
+        List<String> result = new ArrayList<>();
+        for (String part : parts) {
+            if (!part.isEmpty()) {
+                result.add(part);
+            }
+        }
+        return result;
     }
 }
