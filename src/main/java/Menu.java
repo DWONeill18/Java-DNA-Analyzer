@@ -222,7 +222,64 @@ public class Menu {
                 }
                 case 4 -> out.println("DNA Translation");
                 case 5 -> out.println("Random DNA Generator");
-                case 6 -> out.println("Mutation");
+                case 6 -> {
+
+                    out.println("Mutation");
+
+                    out.print("Enter file path: ");
+                    scanner.nextLine();
+                    String fileName = scanner.nextLine();
+
+                    ReadDNA readDNA = new ReadDNA(out);
+                    Optional<String> content = readDNA.readFile(fileName);
+                    if (content.isEmpty()) {
+                        out.println("No data to write; aborting.");
+                        break;
+                    }
+
+                    DNAHelpers helpers = new DNAHelpers();
+                    List<String> codons;
+                    try {
+                        codons = helpers.dnaToCodons(content.get());
+                    } catch (IllegalArgumentException ex) {
+                        out.println(ex.getMessage());
+                        break;
+                    }
+                    if (codons.isEmpty()) {
+                        out.println("No codons available.");
+                        break;
+                    }
+
+                    out.print("Enter number of bases you want to randomly insert: ");
+                    int baseCount;
+                    try {
+                        baseCount = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException ex) {
+                        out.println("Invalid input, please enter a number.");
+                        break;
+                    }
+
+                    DNAMutation dnaMutation = new DNAMutation();
+                    String result;
+                    try {
+                        result = String.valueOf(dnaMutation.mutate(codons, baseCount));
+                    } catch (IllegalArgumentException ex) {
+                        out.println(ex.getMessage());
+                        break;
+                    }
+
+                    out.print("Enter file path to output file: ");
+                    String outputFileName = scanner.nextLine();
+
+                    WriteDNA writeDNA = new WriteDNA();
+                    try {
+                        writeDNA.writeFile(outputFileName, result);
+                    } catch (IOException e) {
+                        out.println("Error while writing file");
+                    }
+
+
+                }
                 case 7 -> out.println("Reverse Transcription");
                 case 8 -> out.println(
                         "Option Information" + System.lineSeparator() +
