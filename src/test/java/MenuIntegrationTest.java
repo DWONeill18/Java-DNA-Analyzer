@@ -286,7 +286,7 @@ class MenuIntegrationTest {
         String output = out.toString();
 
         assertTrue(output.contains("Mutation"));
-        assertTrue(output.contains("Mutation size must be a multiple of 3"));
+        assertTrue(output.contains("Mutation size must be divisible by 3"));
         assertTrue(output.contains("Closing down the lab"));
         assertTrue(!output.contains("Enter file path to output file: "));
     }

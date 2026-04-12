@@ -43,7 +43,7 @@ class DNAMutationTest {
                 () -> mutation.mutate(codons, baseCount)
         );
 
-        assertEquals("Mutation size must be a multiple of 3", ex.getMessage());
+        assertEquals("Mutation size must be divisible by 3", ex.getMessage());
     }
 
     /**

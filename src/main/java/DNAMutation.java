@@ -20,7 +20,7 @@ public class DNAMutation {
      */
     public List<String> mutate(List<String> codons, int baseCount) {
         if (baseCount % 3 != 0) {
-            throw new IllegalArgumentException("Mutation size must be a multiple of 3");
+            throw new IllegalArgumentException("Mutation size must be divisible by 3");
         }
 
         List<String> result = codons == null ? new ArrayList<>() : new ArrayList<>(codons);
