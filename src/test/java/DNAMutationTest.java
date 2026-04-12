@@ -47,6 +47,38 @@ class DNAMutationTest {
     }
 
     /**
+     * Verifies zero mutation sizes are rejected.
+     */
+    @Test
+    void mutate_zeroBaseCount_throwsExceptionWithMessage() {
+        List<String> codons = List.of("ACG", "TGA", "CCT");
+
+        DNAMutation mutation = new DNAMutation();
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> mutation.mutate(codons, 0)
+        );
+
+        assertEquals("Mutation size must be greater than 0", ex.getMessage());
+    }
+
+    /**
+     * Verifies negative mutation sizes are rejected.
+     */
+    @Test
+    void mutate_negativeBaseCount_throwsExceptionWithMessage() {
+        List<String> codons = List.of("ACG", "TGA", "CCT");
+
+        DNAMutation mutation = new DNAMutation();
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> mutation.mutate(codons, -3)
+        );
+
+        assertEquals("Mutation size must be greater than 0", ex.getMessage());
+    }
+
+    /**
      * Verifies null input produces a list containing only the mutation.
      */
     @Test

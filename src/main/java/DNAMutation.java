@@ -19,6 +19,9 @@ public class DNAMutation {
      * @throws IllegalArgumentException when {@code baseCount} is not a multiple of 3
      */
     public List<String> mutate(List<String> codons, int baseCount) {
+        if (baseCount <= 0) {
+            throw new IllegalArgumentException("Mutation size must be greater than 0");
+        }
         if (baseCount % 3 != 0) {
             throw new IllegalArgumentException("Mutation size must be divisible by 3");
         }
