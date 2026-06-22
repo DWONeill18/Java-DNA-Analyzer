@@ -23,7 +23,6 @@
 <build>
     <plugins>
 <!-- Comment out Spotbugs dependency until fixing bugs
-        <!-- SpotBugs -->
         <plugin>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-maven-plugin</artifactId>
