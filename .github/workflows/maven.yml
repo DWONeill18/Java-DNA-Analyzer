@@ -7,10 +7,8 @@ on:
     branches: ["main"]
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
-  pages: write
-  id-token: write
 
 jobs:
   build:
@@ -44,6 +42,7 @@ jobs:
 
           View/download here:
           https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          
+
     - name: Update dependency graph
+      if: github.ref == 'refs/heads/main'
       uses: advanced-security/maven-dependency-submission-action@v4
